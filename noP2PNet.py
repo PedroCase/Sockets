@@ -6,7 +6,7 @@ class NodeP2P:
         self.port = port
         self.serverSocket = socket(AF_INET, SOCK_STREAM)
         self.clientSocket = socket(AF_INET, SOCK_STREAM)
-        self.serverSocket.bind(('127.0.0.1',port))
+        self.serverSocket.bind(("172.20.4.89",port))
         self.serverSocket.listen()
 
 def handleClient(socketClient, ClientAdress):
@@ -15,14 +15,18 @@ def handleClient(socketClient, ClientAdress):
 
         print(f"{ClientAdress}: {req.decode()}")
 
-        rep = "gatos.png, segredosdocin.zip"
+        rep = "Mensagem Recebida"
 
         socketClient.send(rep.encode())
+        if req == "TCHAU":
+            socketClient.close()
+            print(f"Conexão finalizada com Cliente {ClientAdress}.")
+            break
 
 porta = int(input())
 No = NodeP2P(porta)
 porta_vizinho = int(input())
-ip = int(input())
+ip = input()
 No.clientSocket.connect((ip,porta_vizinho))
 
 print("Servidor esperando requisições")
@@ -39,3 +43,7 @@ while True:
     rep = No.clientSocket.recv(1024)
 
     print(f"Resposta do servidor:{rep}")
+    if data == "TCHAU":
+        socketVizinho.close()
+        print(f"Conexão finalizada com Cliente {enderecoVizinho}.")
+        break
